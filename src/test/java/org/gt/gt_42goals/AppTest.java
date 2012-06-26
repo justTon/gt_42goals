@@ -1,4 +1,4 @@
-package org.gt.42goals;
+package org.gt.gt_42goals;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
