@@ -7,22 +7,55 @@ import org.scribe.oauth.OAuthService;
 import java.util.Scanner;
 
 /**
- *
- * @author: ANKA0709
+ * User: AKazakov
  * Date: 27.06.12
  * Time: 14:57
  */
 public class App {
 
-    private static String REQUEST_TOKEN = "6bb7d89fefeff80f254042327dc60583";
-    private static String TOKEN_SECRET = "4dac6b985ae1c660eeaa279e8b19a064";
-
     public static void main(String[] args) {
-
         OAuthService service = new ServiceBuilder()
-                .provider(GTgoalsAPI.class)
-                .apiKey(REQUEST_TOKEN)
-                .apiSecret(TOKEN_SECRET)
+                .provider(GT42goalsAPI.class)
+                .apiKey(GT42goalsConst.APP_TOKEN)
+                .apiSecret(GT42goalsConst.TOKEN_SECRET)
+                .build();
+        Token requestToken = service.getRequestToken();
+
+        System.out.println("Now going and authorizing GT Planner here:");
+        System.out.println(service.getAuthorizationUrl(requestToken));
+
+        String token = getToken(service.getAuthorizationUrl(requestToken));
+
+        Verifier verifier = new Verifier(token);
+        Token accessToken = service.getAccessToken(requestToken, verifier);
+
+        OAuthRequest request = new OAuthRequest(Verb.GET, GT42goalsConst.GET_ALL_GOALS_URL);
+        service.signRequest(accessToken, request);
+        request.addHeader("Accept", "text/json");
+
+        Response response = request.send();
+
+        System.out.println("Response data:");
+        System.out.println();
+        System.out.println("Code: " + response.getCode());
+        System.out.println("Content:\n" + response.getBody());
+    }
+
+    private static String getToken(String url) {
+        AuthorizationDialog ad = new AuthorizationDialog(url);
+        ad.setVisible(true);
+
+        String token = ad.getApprovedToken();
+        ad.dispose();
+        return token;
+    }
+
+
+    private static void consoleGetAllGoals() {
+        OAuthService service = new ServiceBuilder()
+                .provider(GT42goalsAPI.class)
+                .apiKey(GT42goalsConst.APP_TOKEN)
+                .apiSecret(GT42goalsConst.TOKEN_SECRET)
                 .build();
 
         Scanner in = new Scanner(System.in);

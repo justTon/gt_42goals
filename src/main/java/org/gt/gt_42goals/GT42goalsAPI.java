@@ -5,24 +5,23 @@ import org.scribe.model.Token;
 import org.scribe.model.Verb;
 
 /**
- * @author: AKazakov
+ * User: AKazakov
  * Date: 28.06.12
  * Time: 17:06
  */
-public class GTgoalsAPI extends DefaultApi10a
+public class GT42goalsAPI extends DefaultApi10a
 {
-    private static final String AUTHORIZATION_URL = "http://42goals.com/settings/authorize/%s/";
 
     @Override
     public String getAccessTokenEndpoint()
     {
-        return "http://api.42goals.com/v1/oauth/access_token/";
+        return GT42goalsConst.GET_ACCESS_TOKEN_URL;
     }
 
     @Override
     public String getRequestTokenEndpoint()
     {
-        return "http://api.42goals.com/v1/oauth/request_token/";
+        return GT42goalsConst.GET_REQUEST_TOKEN_URL;
     }
 
     @Override
@@ -40,6 +39,6 @@ public class GTgoalsAPI extends DefaultApi10a
     @Override
     public String getAuthorizationUrl(Token requestToken)
     {
-        return String.format(AUTHORIZATION_URL, requestToken.getToken());
+        return String.format(GT42goalsConst.AUTHORIZATION_URL, requestToken.getToken());
     }
 }
